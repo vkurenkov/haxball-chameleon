@@ -8,7 +8,10 @@ def convert_all(path: str):
     num_suc = 0
     for subdir, dirs, files in os.walk(path):
         for file in files:
-            code = convert_to_bin(os.path.join(subdir, file))
+            try:
+                code = convert_to_bin(os.path.join(subdir, file))
+            except Error:
+                continue
             if code == 0:
                 num_suc += 1
             num_all += 1
