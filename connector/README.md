@@ -2,7 +2,7 @@
 # Game Interaction and Replay Parser
 
 ## Setup
-Install python requirements
+Install python requirements (Python must be >=3.5.3)
 ```bash
 pip install -r requirements.txt
 ```
