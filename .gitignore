@@ -1,0 +1,8 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+# IntelliJ IDEA settings
+.idea/
+
+# IPython checkpoints
+.ipynb_checkpoints/
