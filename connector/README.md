@@ -28,5 +28,5 @@ Run bot example
 python bot_example.py
 ```
 
-Open `inter.haxball.com` in browser, game will connect automatically.
+Open `inter.haxball.com:8080` in browser, game will connect automatically.
 This is the original game with slight modifications to sends state to bot and accepts input from bot.

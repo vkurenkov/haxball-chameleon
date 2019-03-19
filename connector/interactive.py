@@ -19,11 +19,11 @@ class Interactive:
 
   async def play(self):
     async with aiohttp.ClientSession() as s:
-      async with s.ws_connect('ws://localhost:80/user') as ws:
+      async with s.ws_connect('ws://localhost:8080/user') as ws:
         async for msg in ws:
           if msg.type == aiohttp.WSMsgType.BINARY:
             self._player_id = msg.data[0]
-            self.game, _ = replay.Game(msg.data, 1)
+            self.game, _ = replay.make_game(msg.data, 1)
             self.player = self.game.players and next((x for x in self.game.players if x.id == self._player_id), None)
             self.onUpdate()
             if self.input != self._sent_input:

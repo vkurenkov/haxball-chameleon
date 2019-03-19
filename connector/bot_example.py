@@ -6,8 +6,12 @@ class Interactive2(interactive.Interactive):
   def onUpdate(self):
     if self.player:
       t = 40
-      px, py, _, _ = self.player.disc
-      bx, by, _, _ = self.game.ball
+      px = self.player.disc.x
+      py = self.player.disc.y
+
+      bx = self.game.ball.x
+      by = self.game.ball.y
+      
       inputs = []
       if abs(px - bx) > t:
         inputs.append(replay.Input.Right if px < bx else replay.Input.Left)

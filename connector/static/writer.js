@@ -43,26 +43,26 @@ class Writer {
   }
 
   writePython(controller) {
-    const L = controller.L;
-    this.writeFloat64(controller.S * controller.vc); // replay time
-    if (!L.H) {
+    const L = controller._L;
+    this.writeFloat64(controller._S * controller._vc); // replay time
+    if (!L._H) {
       this.writeUint8(0); // 0: menu
     } else {
-      this.writeUint8(L.H.Ga > 0 ? 1 : L.H.zb == 0 ? 2 : L.H.zb == 1 ? 3 : 4); // 1: pause, 2: warmup, 3: game, 4: goal
-      this.writeFloat64(L.H.Ac); // game time
-      this.writeUint8(L.H.Kb); // red score
-      this.writeUint8(L.H.Cb); // blue score
-      this.writeBool(L.H.xa > 0 && L.H.Ac > L.H.xa); // overtime
-      const players = L.D.filter(x => x.$.P !== 0);
+      this.writeUint8(L._H._Ga > 0 ? 1 : L._H._zb == 0 ? 2 : L._H._zb == 1 ? 3 : 4); // 1: pause, 2: warmup, 3: game, 4: goal
+      this.writeFloat64(L._H._Ac); // game time
+      this.writeUint8(L._H._Kb); // red score
+      this.writeUint8(L._H._Cb); // blue score
+      this.writeBool(L._H._xa > 0 && L._H._Ac > L._H._xa); // overtime
+      const players = L._D.filter(x => x._$._P !== 0);
       this.writeUint8(players.length); // player count
       for (const player of players) {
-        this.writeUint8(player.T); // id
-        this.writeUint8(player.mb); // input
-        this.writeBool(player.bc); // kick
-        this.writeUint8(player.$.P - 1); // team, 0: red, 1: blue
-        this.writeDisc(player.F); // player disc
+        this.writeUint8(player._T); // id
+        this.writeUint8(player._mb); // input
+        this.writeBool(player._bc); // kick
+        this.writeUint8(player._$._P - 1); // team, 0: red, 1: blue
+        this.writeDisc(player._F); // player disc
       }
-      this.writeDisc(L.H.wa.K[0]); // ball disc
+      this.writeDisc(L._H._wa._K[0]); // ball disc
     }
   }
 }
