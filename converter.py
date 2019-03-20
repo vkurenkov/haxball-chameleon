@@ -2,12 +2,14 @@ import os
 import argparse
 
 def convert_to_bin(path: str):
-    return os.system("nodejs connector/replay.js convert {} {}".format(path, path + ".bin"))
+    return os.system("nodejs connector/replay.js convert \"{}\" \"{}\"".format(path, path + ".bin"))
 def convert_all(path: str):
     num_all = 0
     num_suc = 0
     for subdir, dirs, files in os.walk(path):
         for file in files:
+            if file[-4:] == ".bin":
+                continue
             try:
                 code = convert_to_bin(os.path.join(subdir, file))
             except Error:
