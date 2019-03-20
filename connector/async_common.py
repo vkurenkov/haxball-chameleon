@@ -1,6 +1,6 @@
 import asyncio
 
-import asyncio_sigint
+from . import asyncio_sigint
 
 loop = asyncio.get_event_loop()
 

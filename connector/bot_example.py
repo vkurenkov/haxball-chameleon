@@ -1,6 +1,6 @@
-import async_common
-import interactive
-import replay
+from . import async_common
+from . import interactive
+from . import replay
 
 class Interactive2(interactive.Interactive):
   def onUpdate(self):
