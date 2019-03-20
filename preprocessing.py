@@ -36,18 +36,25 @@ def who_scored(episode) -> Optional[Team]:
         return Team.Red
     return Team.Blue
 
-def game_state_to_numpy(game_state: Game, player_id: int) -> Tuple[np.array, np.array]:
+def game_state_to_numpy(game_state: Game, team: Team) -> Tuple[np.array, np.array]:
     def disc_to_numpy(disc : Disc):
         return np.array([disc.x, disc.y, disc.vx, disc.vy])
     
-    X = [] 
+    X = []
+    y = None
     for player in game_state.players:
-        if player.id == player_id:
+        if player.team == team:
             y = player.input
             X.append(disc_to_numpy(player.disc))
         else:
             X.append(disc_to_numpy(player.disc))
     X.append(disc_to_numpy(game_state.ball))
-    X.append(np.array([game_state.score[0] - game_state.score[1]]))
+
+    if team == Team.Red:
+        score_diff = game_state.score[0] - game_state.score[1]
+    else:
+        score_diff = game_state.score[1] - game_state.score[0]
+
+    X.append(np.array([score_diff]))
 
     return np.array(X), np.array(y)
