@@ -29,7 +29,7 @@ class Disc:
 class Player:
   def __init__(self, id_, input_, kick, team, disc):
     self.id, self.input, self.kick, self.team, self.disc = id_, input_, kick, team, disc
-    self.binput = [bool(input_ & (1 << n)) for n in range(5)]
+    self.input = [bool(input_ & (1 << n)) for n in range(5)]
 
 class Game:
   def __init__(self, replayTime, state, gameTime, score, overtime, players, ball):
