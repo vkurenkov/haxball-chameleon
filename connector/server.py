@@ -1,7 +1,7 @@
 import aiohttp
 from aiohttp import web
 
-import async_common
+from . import async_common
 
 routes = web.RouteTableDef()
 

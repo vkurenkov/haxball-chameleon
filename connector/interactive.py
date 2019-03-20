@@ -1,7 +1,7 @@
 import aiohttp
 import functools, operator
 
-import replay
+from . import replay
 
 class Interactive:
   def __init__(self, channel_id):
@@ -24,7 +24,7 @@ class Interactive:
         async for msg in ws:
           if msg.type == aiohttp.WSMsgType.BINARY:
             self._player_id = msg.data[0]
-            self.game, _ = replay.Game(msg.data, 1)
+            self.game, _ = replay._Game(msg.data, 1)
             self.player = self.game.players and next((x for x in self.game.players if x.id == self._player_id), None)
             self.onUpdate()
             if self.input != self._sent_input:
