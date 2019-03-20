@@ -3,9 +3,14 @@ exposed.Qa.prototype.qk = exposed.Qa.prototype.nd = exposed.Qa.prototype.od = ()
 
 let ws = null;
 interactiveReconnect();
+window.addEventListener('hashchange', interactiveReconnect);
 
 function interactiveReconnect() {
-  ws = new WebSocket(`ws://${location.host}/game`);
+  if (!location.hash) {
+    return;
+  }
+  const channel_id = location.hash.slice(1);
+  ws = new WebSocket(`ws://${location.host}/game?channel_id=${channel_id}`);
   ws.binaryType = 'arraybuffer';
   ws.onmessage = (e) => {
     const msg = e.data;

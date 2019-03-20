@@ -9357,6 +9357,47 @@ let exposed;
   t.Cm = {}.toString;
   v.xo()
 
+  const $_Team = p;
+
+  function forward(class_, key) {
+    Object.defineProperty(class_.prototype, '_' + key, {
+      get() {if (typeof this[key] === 'undefined') throw new Error(`_${key}:${key}`); return this[key]},
+      set(x) {return this[key] = x},
+    })
+  }
+
+  forward($_BaseNetGameController, 'td');
+  forward($_BaseNetGameController, 'Mg');
+  forward($_BaseNetGameController, 'Te');
+  forward($_BaseNetGameController, 'v');
+
+  forward($_BaseNetGameController, 'L');
+  forward($_BaseNetGameController, 'vc');
+  forward($_BaseNetGameController, 'S');
+
+  forward($_GameState, 'H');
+  forward($_GameState, 'D');
+
+  forward(ta, 'zb');
+  forward(ta, 'Ac');
+  forward(ta, 'Kb');
+  forward(ta, 'Cb');
+  forward(ta, 'xa');
+  forward(ta, 'wa');
+
+  forward($_TestSimFloat, 'K');
+
+  forward($_Player, 'T');
+  forward($_Player, 'mb');
+  forward($_Player, 'bc');
+  forward($_Player, '$');
+  forward($_Player, 'F');
+
+  forward($_Team, 'P');
+
+  forward($_DiscF, 'a');
+  forward($_DiscF, 'M');
+
   exposed = {
     $_BaseNetGameController,
     Qa,

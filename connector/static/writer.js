@@ -41,6 +41,12 @@ class Writer {
     this.writeFloat64(disc.M.x);
     this.writeFloat64(disc.M.y);
   }
+  writeBuffer(buffer) {
+    const pos = this.pos;
+    this.pos += buffer.byteLength;
+    this.resize();
+    (new Uint8Array(this.view.buffer)).set(new Uint8Array(buffer), pos);
+  }
 
   writePython(controller) {
     const L = controller._L;

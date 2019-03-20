@@ -11,54 +11,74 @@ def route_ws(path):
     async def wrap(request):
       ws = web.WebSocketResponse(compress=False)
       await ws.prepare(request)
-      await fn(ws)
+      await fn(ws, request)
       return ws
   return decorator
 
-game = None
-user = None
+class Channel:
+  def __init__(self, id_):
+    self.id = id_
+    self.game = None
+    self.user = None
+  def print(self, *a):
+    print('channel %s:' % self.id, *a)
+
+channels = dict()
+
+def with_channel(fn):
+  async def wrap(ws, request):
+    channel_id = request.query.get('channel_id', None)
+    if channel_id != None:
+      channel = channels.get(channel_id, None)
+      if channel == None:
+        channel = channels[channel_id] = Channel(channel_id)
+      await fn(ws, channel)
+    else:
+      await ws.send_str('channel_id missing')
+      await ws.close()
+  return wrap
 
 @route_ws('/game')
-async def ws_game(ws):
-  global game
-  if game != None:
-    print('game reconnected')
-    await game.close()
-  print('game connected')
-  game = ws
-  if user != None:
-    await game.send_str('+')
+@with_channel
+async def ws_game(ws, channel):
+  if channel.game != None:
+    channel.print('game reconnected')
+    await channel.game.close()
+  channel.print('game connected')
+  channel.game = ws
+  if channel.user != None:
+    await channel.game.send_str('+')
   async for msg in ws:
     if msg.type == aiohttp.WSMsgType.BINARY:
-      if user != None:
-        await user.send_bytes(msg.data)
+      if channel.user != None:
+        await channel.user.send_bytes(msg.data)
     else:
       break
-  print('game disconnected')
-  game = None
+  channel.print('game disconnected')
+  channel.game = None
 
 @route_ws('/user')
-async def ws_user(ws):
-  global user
-  if user != None:
-    print('user reconnected')
-    await user.close()
+@with_channel
+async def ws_user(ws, channel):
+  if channel.user != None:
+    channel.print('user reconnected')
+    await channel.user.close()
   else:
-    print('user connected')
-  user = ws
-  if game != None:
-    await game.send_str('+')
+    channel.print('user connected')
+  channel.user = ws
+  if channel.game != None:
+    await channel.game.send_str('+')
   async for msg in ws:
     if msg.type == aiohttp.WSMsgType.TEXT:
-      if game != None:
-        await game.send_str(msg.data)
+      if channel.game != None:
+        await channel.game.send_str(msg.data)
     else:
       break
-  print('user disconnected')
-  user = None
-  if game != None:
-    await game.send_str('0')
-    await game.send_str('-')
+  channel.print('user disconnected')
+  channel.user = None
+  if channel.game != None:
+    await channel.game.send_str('0')
+    await channel.game.send_str('-')
 
 @routes.get('/')
 async def root(_):

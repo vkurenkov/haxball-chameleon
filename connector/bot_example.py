@@ -21,6 +21,6 @@ class Interactive2(interactive.Interactive):
 
 if __name__ == '__main__':
   try:
-    async_common.run(Interactive2().play())
+    async_common.run(Interactive2('0').play())
   except KeyboardInterrupt:
     pass
