@@ -6,7 +6,7 @@ def convert_to_bin(subdir: str, file: str):
     try:
         os.mkdir("preprocessed")
     except:
-        continue
+        pass
     return os.system("nodejs connector/replay.js convert \"{}\" \"{}\"".format(path, "preprocessed/"+file+".bin"))
 
 def convert_all(path: str):
