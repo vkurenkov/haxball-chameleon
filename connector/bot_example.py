@@ -1,6 +1,6 @@
-import async_common
-import interactive
-import replay
+from . import async_common
+from . import interactive
+from . import replay
 
 class Interactive2(interactive.Interactive):
   def onUpdate(self):
@@ -21,6 +21,6 @@ class Interactive2(interactive.Interactive):
 
 if __name__ == '__main__':
   try:
-    async_common.run(Interactive2().play())
+    async_common.run(Interactive2('0').play())
   except KeyboardInterrupt:
     pass

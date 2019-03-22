@@ -3418,6 +3418,7 @@ function closure() {
     forward($_Player, 'bc');
     forward($_Player, '$');
     forward($_Player, 'F');
+    forward($_Player, 'o');
 
     forward($_Team, 'P');
 

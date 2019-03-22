@@ -26,8 +26,14 @@ function convert(replay) {
   const exposed = getClosure(replay)();
 
   const controller = new exposed.$_ReplayController(replay, new exposed.$_GameState, exposed.v);
-  const writer = new Writer();
-  controller.onTick = () => writer.writePython(controller);
+  const writer = new Writer()
+  const names = new Object();
+  controller.onTick = () => {
+    for (const player of controller._L._D.filter(x => x._$._P !== 0)) {
+      names[player._T] = player._o;
+    }
+    writer.writePython(controller);
+  };
 
   controller.onTick();
   controller._td = controller._Te * controller._Mg;
@@ -36,7 +42,11 @@ function convert(replay) {
   }
   
   writer.compact();
-  return writer.view.buffer;
+  const writer2 = new Writer();
+  writer2.writeBuffer(Buffer.from(JSON.stringify(names) + '\r\n\r\n', 'utf8'));
+  writer2.writeBuffer(writer.view.buffer);
+  writer2.compact();
+  return writer2.view.buffer;
 }
 
 if (require.main === module) {
