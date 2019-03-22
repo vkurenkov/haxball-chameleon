@@ -1,4 +1,4 @@
-# Haxball Imitator
+# Haxball Chameleon
 <img src="https://www.haxball.com/FFuuq69i/s/haxball-big-min.png">
 
 Solving Haxball using Imitation Learning methods.
