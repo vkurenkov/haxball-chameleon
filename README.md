@@ -1,4 +1,6 @@
-# haxball-imitator
+# Haxball Imitator
+<img src="https://www.haxball.com/FFuuq69i/s/haxball-big-min.png">
+
 Solving Haxball using Imitation Learning methods.
 
 ## How to run my agents?
