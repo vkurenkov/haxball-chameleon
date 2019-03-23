@@ -133,25 +133,94 @@ def who_scored(episode) -> Optional[Team]:
         return Team.Red
     return Team.Blue
 
-def game_state_to_numpy(game_state: Game, team: Team) -> Tuple[np.array, np.array]:
-    def disc_to_numpy(disc : Disc):
-        return np.array([disc.x, disc.y, disc.vx, disc.vy])
-    
-    X = [None, None, None, None]
-    y = None
-    for player in game_state.players:
-        if player.team == team:
-            y = player.input
-            X[0] = disc_to_numpy(player.disc)
+def distance_and_angle(pos1: np.array, pos2: np.array) -> Tuple[float, float]:
+    def decompose_norm_unit(pos: np.array) -> Tuple[float, np.array]:
+        norm_pos = np.linalg.norm(pos)
+        if norm_pos == 0:
+            unit_pos = pos
         else:
-            X[1] = disc_to_numpy(player.disc)
-    X[2] = disc_to_numpy(game_state.ball)
+            unit_pos = pos / norm_pos
 
+        return norm_pos, unit_pos
+
+    _, pos1_u = decompose_norm_unit(pos1)
+    _, pos2_u = decompose_norm_unit(pos2)
+
+    dist  = np.linalg.norm(pos1 - pos2)
+    angle = np.arccos(np.clip(np.dot(pos1_u, pos2_u), -1.0, 1.0))
+
+    return dist, angle
+
+def game_state_to_numpy(game_state: Game, team: Team) -> Tuple[np.array, np.array]:
+    X = []
+
+    # TODO:
+    #   - distance between player and down side
+    #   - distance between player and up side
+    #   - distance between enemy and down side
+    #   - distance between enemy and up side
+    #   - distance between player and left side
+    #   - distance between player and right side
+    #   - distance between enemy and left side
+    #   - distance between enemy and right side
+    y = None
+
+    player = None
+    enemy  = None
+    for actor in game_state.players:
+        if actor.team == team:
+            player = actor
+        else:
+            enemy = actor
+
+    if player is None or enemy is None:
+        return None, None
+
+    # Player's input bitmask
+    y = player.input
+
+    # Score difference
     if team == Team.Red:
         score_diff = game_state.score[0] - game_state.score[1]
     else:
         score_diff = game_state.score[1] - game_state.score[0]
+    X.append(np.array([score_diff]))
 
-    X[3] = np.array([score_diff])
+    # Distances and angles between moving objects
+    player_pos = np.array([player.disc.x, player.disc.y])
+    enemy_pos  = np.array([enemy.disc.x, enemy.disc.y])
+    ball_pos   = np.array([game_state.ball.x, game_state.ball.y])
 
-    return np.array(X), np.array(y)
+    dist_player_enemy, angle_player_enemy = distance_and_angle(player_pos, enemy_pos)
+    dist_player_ball,  angle_player_ball  = distance_and_angle(player_pos, ball_pos)
+    dist_enemy_ball,   angle_enemy_ball   = distance_and_angle(enemy_pos, ball_pos)
+
+    # Speed and angle differences between moving objects
+    player_v = np.array([player.disc.vx, player.disc.vy])
+    enemy_v  = np.array([enemy.disc.vx, enemy.disc.vy])
+    ball_v   = np.array([game_state.ball.vx, game_state.ball.vy])
+
+    dist_player_enemy_v, angle_player_enemy_v = distance_and_angle(player_v, enemy_v)
+    dist_player_ball_v,  angle_player_ball_v  = distance_and_angle(player_v, ball_v)
+    dist_enemy_ball_v,   angle_enemy_ball_v   = distance_and_angle(enemy_v, ball_v)
+
+    # Gamestate
+    gamestate = 0
+    if game_state.state == State.Game:
+        gamestate = 0
+    elif game_state.state == State.Warmup:
+        gamestate = 1
+    elif game_state.state == State.Goal:
+        gamestate = 2
+    else:
+        raise NotImplementedError("Can't handle other states.")
+
+    X.append(np.array([
+                dist_player_enemy, dist_player_ball, dist_enemy_ball, 
+                angle_player_enemy, angle_player_ball, angle_enemy_ball,
+                dist_player_enemy_v, dist_player_ball_v, dist_enemy_ball_v,
+                angle_player_enemy_v, angle_player_ball_v, angle_enemy_ball_v,
+                gamestate, team.value
+            ]).ravel())
+
+    return np.concatenate(X), np.array(y)
