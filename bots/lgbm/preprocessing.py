@@ -218,8 +218,9 @@ def game_state_to_numpy(game_state: Game, team: Team) -> Tuple[np.array, np.arra
     X.append(np.array([
                 dist_player_enemy, dist_player_ball, dist_enemy_ball, 
                 angle_player_enemy, angle_player_ball, angle_enemy_ball,
-                dist_player_enemy_v, dist_player_ball_v, dist_enemy_ball_v,
-                angle_player_enemy_v, angle_player_ball_v, angle_enemy_ball_v,
+                *player_pos, *enemy_pos, *ball_pos,
+                #dist_player_enemy_v, dist_player_ball_v, dist_enemy_ball_v,
+                #angle_player_enemy_v, angle_player_ball_v, angle_enemy_ball_v,
                 gamestate, team.value
             ]).ravel())
 
