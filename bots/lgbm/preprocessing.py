@@ -82,9 +82,9 @@ class Encoder(object):
     def boolarr_to_enumarr(y: [bool]) -> [Input]:
         output = []
         if y[0] == 1:
-            output.append(Input.Down)
-        elif y[0] == -1:
             output.append(Input.Up)
+        elif y[0] == -1:
+            output.append(Input.Down)
             
         if y[1] == 1:
             output.append(Input.Left)
@@ -133,16 +133,16 @@ def who_scored(episode) -> Optional[Team]:
         return Team.Red
     return Team.Blue
 
+def decompose_norm_unit(pos: np.array) -> Tuple[float, np.array]:
+    norm_pos = np.linalg.norm(pos)
+    if norm_pos == 0:
+        unit_pos = pos
+    else:
+        unit_pos = pos / norm_pos
+
+    return norm_pos, unit_pos
+
 def distance_and_angle(pos1: np.array, pos2: np.array) -> Tuple[float, float]:
-    def decompose_norm_unit(pos: np.array) -> Tuple[float, np.array]:
-        norm_pos = np.linalg.norm(pos)
-        if norm_pos == 0:
-            unit_pos = pos
-        else:
-            unit_pos = pos / norm_pos
-
-        return norm_pos, unit_pos
-
     _, pos1_u = decompose_norm_unit(pos1)
     _, pos2_u = decompose_norm_unit(pos2)
 
@@ -191,18 +191,18 @@ def game_state_to_numpy(game_state: Game, team: Team) -> Tuple[np.array, np.arra
     enemy_pos  = np.array([enemy.disc.x, enemy.disc.y])
     ball_pos   = np.array([game_state.ball.x, game_state.ball.y])
 
-    dist_player_enemy, angle_player_enemy = distance_and_angle(player_pos, enemy_pos)
-    dist_player_ball,  angle_player_ball  = distance_and_angle(player_pos, ball_pos)
-    dist_enemy_ball,   angle_enemy_ball   = distance_and_angle(enemy_pos, ball_pos)
+    dist_player_enemy, angle_player_enemy = decompose_norm_unit(player_pos - enemy_pos)
+    dist_player_ball,  angle_player_ball  = decompose_norm_unit(player_pos - ball_pos)
+    dist_enemy_ball,   angle_enemy_ball   = decompose_norm_unit(enemy_pos  - ball_pos)
 
     # Speed and angle differences between moving objects
-    player_v = np.array([player.disc.vx, player.disc.vy])
-    enemy_v  = np.array([enemy.disc.vx, enemy.disc.vy])
-    ball_v   = np.array([game_state.ball.vx, game_state.ball.vy])
+    # player_v = np.array([player.disc.vx, player.disc.vy])
+    # enemy_v  = np.array([enemy.disc.vx, enemy.disc.vy])
+    # ball_v   = np.array([game_state.ball.vx, game_state.ball.vy])
 
-    dist_player_enemy_v, angle_player_enemy_v = distance_and_angle(player_v, enemy_v)
-    dist_player_ball_v,  angle_player_ball_v  = distance_and_angle(player_v, ball_v)
-    dist_enemy_ball_v,   angle_enemy_ball_v   = distance_and_angle(enemy_v, ball_v)
+    # dist_player_enemy_v, angle_player_enemy_v = distance_and_angle(player_v, enemy_v)
+    # dist_player_ball_v,  angle_player_ball_v  = distance_and_angle(player_v, ball_v)
+    # dist_enemy_ball_v,   angle_enemy_ball_v   = distance_and_angle(enemy_v, ball_v)
 
     # Gamestate
     gamestate = 0
@@ -216,12 +216,13 @@ def game_state_to_numpy(game_state: Game, team: Team) -> Tuple[np.array, np.arra
         raise NotImplementedError("Can't handle other states.")
 
     X.append(np.array([
-                dist_player_enemy, dist_player_ball, dist_enemy_ball, 
-                angle_player_enemy, angle_player_ball, angle_enemy_ball,
-                *player_pos, *enemy_pos, *ball_pos,
+                dist_player_ball, *angle_player_ball
+                #dist_player_enemy, dist_player_ball, dist_enemy_ball, 
+                #*angle_player_enemy, *angle_player_ball, *angle_enemy_ball,
+                #*player_pos, *enemy_pos, *ball_pos,
                 #dist_player_enemy_v, dist_player_ball_v, dist_enemy_ball_v,
                 #angle_player_enemy_v, angle_player_ball_v, angle_enemy_ball_v,
-                gamestate, team.value
+                #gamestate, team.value
             ]).ravel())
 
     return np.concatenate(X), np.array(y)

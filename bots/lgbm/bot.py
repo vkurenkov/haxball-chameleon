@@ -42,7 +42,7 @@ class LGBMBot(interactive.Interactive):
 		super().__init__(channel_id)
 
 		# Load pre-trained model and set-up the bot
-		self.STACK_FRAMES = 4
+		self.STACK_FRAMES = 1
 		self.REPEAT_FRAMES = 1
 		self.model = load(os.path.join(
 			module_path(__file__), "imitator1.joblib"))
