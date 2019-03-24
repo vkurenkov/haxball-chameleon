@@ -43,7 +43,7 @@ class LGBMBot(interactive.Interactive):
 
 		# Load pre-trained model and set-up the bot
 		self.STACK_FRAMES = 1
-		self.REPEAT_FRAMES = 4
+		self.REPEAT_FRAMES = 1
 		self.model = load(os.path.join(
 			module_path(__file__), "imitator1.joblib"))
 		self.recent_frames = []
@@ -53,8 +53,8 @@ class LGBMBot(interactive.Interactive):
 		return self.player is not None and is_in_gameplay(self.game.state)
 
 	def prepare_observation(self) -> np.array:
-		if self.player.team == Team.Blue:
-			transform_blue_pivotal(self.game)
+		#if self.player.team == Team.Blue:
+		#	transform_blue_pivotal(self.game)
 
 		# Etract current frame and put it to recent ones
 		cur_frame, _ = game_state_to_numpy(self.game, self.player.team)
