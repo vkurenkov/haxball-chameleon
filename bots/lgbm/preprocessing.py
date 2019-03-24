@@ -2,7 +2,7 @@ import os
 import numpy as np
 
 from replay import Replay, State, Team, Game, Disc, Input
-from typing import Optional, Tuple
+from typing import Optional, Tuple, List
 
 class Encoder(object):
     state_to_class = {
@@ -35,51 +35,53 @@ class Encoder(object):
     }
     
     @staticmethod
+    def boolarr_to_dirstate(y : [bool]) -> np.array:
+        result = [0,0,0]
+        if y[0]: #UP key pressed
+            result[0] += 1
+        if y[1]: #down key pressed
+            result[0] -= 1
+
+        if y[2]: #left
+            result[1] += 1
+        if y[3]: #right
+            result[1] -= 1
+
+        if y[4]:
+            result[2] += 1
+
+        return np.array(result)
+
+    @staticmethod
     def boolarr_to_class(y : [bool]) -> int:
-        def boolarr_to_dirstate(y : [bool]) -> np.array:
-            result = [0,0,0]
-            if y[0]: #UP key pressed
-                result[0] += 1
-            if y[1]: #down key pressed
-                result[0] -= 1
-
-            if y[2]: #left
-                result[1] += 1
-            if y[3]: #right
-                result[1] -= 1
-
-            if y[4]:
-                result[2] += 1
-
-            return np.array(result)
-
-        return Encoder.state_to_class[tuple(boolarr_to_dirstate(y))]
+        return Encoder.state_to_class[tuple(Encoder.boolarr_to_dirstate(y))]
     
     @staticmethod
-    def class_to_boolarr(result : int) -> [bool]:
+    def dirstate_to_boolarr(result : np.array) -> [bool]:
+        y = [False for x in range(0,5)]
+        if result[0] == 1:
+            y[0] = True #UP key pressed
+        if result[0] == -1:
+            y[1] = True #down key pressed
+            
+        if result[1] == 1: #left
+            y[2] = True
+        if result[1] == -1: #right
+            y[3] = True
+        if result[2] == 1:
+            y[4] = True
+        return y
+
+    @staticmethod
+    def class_to_dirstate(result : int) -> [bool]:
         assert(result<=17)
-        def dirstate_to_boolarr(result : np.array) -> [bool]:
-            y = [False for x in range(0,5)]
-            if result[0] == 1:
-                y[0] = True #UP key pressed
-            if result[0] == -1:
-                y[1] = True #down key pressed
-                
-            if result[1] == 1: #left
-                y[2] = True
-            if result[1] == -1: #right
-                y[3] = True
-            if result[2] == 1:
-                y[4] = True
-            return y
-        
         for dirstate, cls in Encoder.state_to_class.items():    
             if result == cls:
                 return dirstate
         raise ValueError("Class not found")
         
     @staticmethod
-    def boolarr_to_enumarr(y: [bool]) -> [Input]:
+    def dirstate_to_enumarr(y: [bool]) -> [Input]:
         output = []
         if y[0] == 1:
             output.append(Input.Up)
@@ -98,8 +100,47 @@ class Encoder(object):
 
     @staticmethod
     def class_to_enumarr(result: int) -> [Input]:
-        return Encoder.boolarr_to_enumarr(Encoder.class_to_boolarr(result))
+        return Encoder.dirstate_to_enumarr(Encoder.class_to_dirstate(result))
 
+STACK_FRAMES = 1
+
+def transform_episode_around_pivot(episode, team: Team) -> None:
+    for state in episode:
+        transform_state_around_pivot(state, team)
+
+def transform_state_around_pivot(state: Game, team: Team) -> None:
+    """
+    Red team is assumed to be pivotal.
+    """
+    if team == Team.Blue:
+        if state.players is None:
+            return
+
+        for player in state.players:
+            # Inverse position and velocity along x-axis
+            player.disc.x  = -player.disc.x
+            player.disc.vx = -player.disc.vx
+
+            # Swap left and right actions
+            temp            = player.input[2]
+            player.input[2] = player.input[3]
+            player.input[3] = temp
+
+        # Inverse position and velocity of the ball along x-axis
+        state.ball.x  = -state.ball.x
+        state.ball.vx = -state.ball.vx
+
+def transform_actions_around_pivot(boolarr: List[bool], team: Team) -> List[bool]:
+    """
+    Red team is assumed to be pivotal.
+    """
+    if team == Team.Blue:
+        # Swap left and right actions
+        temp       = boolarr[2]
+        boolarr[2] = boolarr[3]
+        boolarr[3] = temp
+
+    return boolarr
 
 def remove_menu_and_pause(replay, debug=False):
     episodes    = []
@@ -153,16 +194,6 @@ def distance_and_angle(pos1: np.array, pos2: np.array) -> Tuple[float, float]:
 
 def game_state_to_numpy(game_state: Game, team: Team) -> Tuple[np.array, np.array]:
     X = []
-
-    # TODO:
-    #   - distance between player and down side
-    #   - distance between player and up side
-    #   - distance between enemy and down side
-    #   - distance between enemy and up side
-    #   - distance between player and left side
-    #   - distance between player and right side
-    #   - distance between enemy and left side
-    #   - distance between enemy and right side
     y = None
 
     player = None
