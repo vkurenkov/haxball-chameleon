@@ -184,7 +184,7 @@ def game_state_to_numpy(game_state: Game, team: Team) -> Tuple[np.array, np.arra
         score_diff = game_state.score[0] - game_state.score[1]
     else:
         score_diff = game_state.score[1] - game_state.score[0]
-    X.append(np.array([score_diff]))
+    # X.append(np.array([score_diff]))
 
     # Distances and angles between moving objects
     player_pos = np.array([player.disc.x, player.disc.y])
@@ -196,13 +196,21 @@ def game_state_to_numpy(game_state: Game, team: Team) -> Tuple[np.array, np.arra
     dist_enemy_ball,   angle_enemy_ball   = decompose_norm_unit(enemy_pos  - ball_pos)
 
     # Speed and angle differences between moving objects
-    # player_v = np.array([player.disc.vx, player.disc.vy])
-    # enemy_v  = np.array([enemy.disc.vx, enemy.disc.vy])
-    # ball_v   = np.array([game_state.ball.vx, game_state.ball.vy])
+    player_v = np.array([player.disc.vx, player.disc.vy])
+    enemy_v  = np.array([enemy.disc.vx, enemy.disc.vy])
+    ball_v   = np.array([game_state.ball.vx, game_state.ball.vy])
 
-    # dist_player_enemy_v, angle_player_enemy_v = distance_and_angle(player_v, enemy_v)
-    # dist_player_ball_v,  angle_player_ball_v  = distance_and_angle(player_v, ball_v)
-    # dist_enemy_ball_v,   angle_enemy_ball_v   = distance_and_angle(enemy_v, ball_v)
+    dist_player_enemy_v, angle_player_enemy_v = distance_and_angle(player_v, enemy_v)
+    dist_player_ball_v,  angle_player_ball_v  = distance_and_angle(player_v, ball_v)
+    dist_enemy_ball_v,   angle_enemy_ball_v   = distance_and_angle(enemy_v, ball_v)
+
+    if team == Team.Red:
+        enemy_gate_pos = np.array([380, 0])
+    else:
+        enemy_gate_pos = np.array([-380, 0])
+    dist_enemy_gate, angle_enemy_gate = decompose_norm_unit(player_pos - enemy_gate_pos)
+
+    enemy_kick = enemy.input[-1] == Input.Kick
 
     # Gamestate
     gamestate = 0
@@ -216,13 +224,12 @@ def game_state_to_numpy(game_state: Game, team: Team) -> Tuple[np.array, np.arra
         raise NotImplementedError("Can't handle other states.")
 
     X.append(np.array([
-                dist_player_ball, *angle_player_ball
-                #dist_player_enemy, dist_player_ball, dist_enemy_ball, 
-                #*angle_player_enemy, *angle_player_ball, *angle_enemy_ball,
-                #*player_pos, *enemy_pos, *ball_pos,
+                dist_player_enemy, dist_player_ball, dist_enemy_ball,
+                *angle_player_enemy, *angle_player_ball, *angle_enemy_ball,
+                *player_pos, *enemy_pos, *ball_pos,
                 #dist_player_enemy_v, dist_player_ball_v, dist_enemy_ball_v,
                 #angle_player_enemy_v, angle_player_ball_v, angle_enemy_ball_v,
-                #gamestate, team.value
+                gamestate, team.value
             ]).ravel())
 
     return np.concatenate(X), np.array(y)
