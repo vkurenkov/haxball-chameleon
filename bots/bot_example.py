@@ -18,9 +18,3 @@ class ChasingBot(interactive.Interactive):
       if abs(py - by) > t:
         inputs.append(replay.Input.Down if py < by else replay.Input.Up)
       self.setInput(*inputs)
-
-if __name__ == '__main__':
-  try:
-    async_common.run(ChasingBot('0').play())
-  except KeyboardInterrupt:
-    pass
