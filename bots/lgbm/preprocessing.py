@@ -4,7 +4,12 @@ import numpy as np
 from replay import Replay, State, Team, Game, Disc, Input
 from typing import Optional, Tuple, List
 
+# We're sorry for this.
+# It does a mapping between pressed buttons to a class and vice-verse
 class Encoder(object):
+    # 0 dimension for up/down (0 - not pressed, 1 - up, -1 - down)
+    # 1 dimension for left/right (0 - not pressed, 1 - left, -1 - right)
+    # 2 dimension for kick (0 - not pressed, 1 - pressed)
     state_to_class = {
         tuple([0,0,0]):0,
         tuple([0,0,1]):1,
