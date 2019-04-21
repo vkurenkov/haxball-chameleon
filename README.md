@@ -1,5 +1,7 @@
 # Haxball Chameleon
-<img src="https://github.com/vkurenkov/haxball-imitator/blob/master/haxball-big-min.png">
+<p align="center">
+  <img src="https://github.com/vkurenkov/haxball-imitator/blob/master/haxball-big-min.png">
+</p>
 
 This repository contains an interface for interacting with the game and an implementation of behavioral clonning agent.
 
