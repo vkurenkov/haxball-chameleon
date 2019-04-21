@@ -18,6 +18,8 @@ HaxBall is a realtime multiplayer game that plays like a mix between football an
 ### How to run my agents?
 ___________________________________________
 
+LINUX ONLY.
+
 #### Make the server running.
 
 1. Add the following line to your hosts file (`c:\windows\system32\drivers\etc\hosts` on windows, `/etc/hosts` on linux)
