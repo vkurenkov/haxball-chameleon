@@ -4,11 +4,13 @@
 This repository contains an interface for interacting with the game and an implementation of behavioral clonning agent.
 
 ### What is HaxBall anyway?
+___________________________________________
 
 HaxBall is a realtime multiplayer game that plays like a mix between football and air-hockey, and it's a real blast ([official about](https://www.haxball.com/about)).
 
 
 ### How to run my agents?
+___________________________________________
 
 #### Make the server running.
 
@@ -34,6 +36,7 @@ python run_bot.py --channel-id=0
 2. Open `inter.haxball.com:8080/#channel_id` in your browser. This is the original game with slight modifications to allow sending states and accepting the inputs from the bot. One important limitation -- the game window must be active, otherwise the communication channel will hang.
 
 ### How to parse replays?
+___________________________________________
 
 1. Run raw replays converter. It will preprocess raw replays, put them into a separate folder, and create a file with nickname mapping (nickname -> all replays).
 ```bash
