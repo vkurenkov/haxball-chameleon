@@ -8,6 +8,10 @@ ___________________________________________
 
 HaxBall is a realtime multiplayer game that plays like a mix between football and air-hockey, and it's a real blast ([official about](https://www.haxball.com/about)).
 
+<p align="center">
+  <img src="https://thumbs.gfycat.com/ElderlyImpressionableGrayreefshark-size_restricted.gif">
+</p>
+
 
 ### How to run my agents?
 ___________________________________________
