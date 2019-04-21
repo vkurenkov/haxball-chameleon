@@ -8,7 +8,7 @@ from joblib import load
 from bots.lgbm.preprocessing import game_state_to_numpy, Encoder
 from bots.lgbm.preprocessing import transform_state_around_pivot
 from bots.lgbm.preprocessing import transform_actions_around_pivot
-from bots.lgbm.preprocessing import STACK_FRAMES
+from bots.lgbm.preprocessing import STACK_FRAMES, TRANSFORM_AROUND_PIVOT
 
 
 def is_in_gameplay(game_state) -> bool:
@@ -31,7 +31,8 @@ class LGBMBot(interactive.Interactive):
 
     def prepare_observation(self) -> np.array:
         # Transform around the pivot
-        transform_state_around_pivot(self.game, self.player.team)
+        if TRANSFORM_AROUND_PIVOT:
+            transform_state_around_pivot(self.game, self.player.team)
 
         # Etract current frame and put it to recent ones
         cur_frame, _ = game_state_to_numpy(self.game, self.player.team)
@@ -51,7 +52,16 @@ class LGBMBot(interactive.Interactive):
                 obs = self.prepare_observation()
                 self.action = self.act(obs)
 
-            # Send the action to the game
+            print(self.action)
+            self.send_action(self.action)
+            self.frames_passed += 1
+
+    def act(self, obs: np.array) -> int:
+        action = self.model.predict(obs.reshape(1, -1))
+        return action
+
+    def send_action(self, action) -> None:
+        if TRANSFORM_AROUND_PIVOT:
             inputs_booleans = Encoder.dirstate_to_boolarr(
                 Encoder.class_to_dirstate(self.action))
             inputs_booleans = transform_actions_around_pivot(
@@ -59,9 +69,7 @@ class LGBMBot(interactive.Interactive):
 
             inputs = Encoder.dirstate_to_enumarr(
                 Encoder.boolarr_to_dirstate(inputs_booleans))
-            self.setInput(*inputs)
-            self.frames_passed += 1
+        else:
+            inputs = Encoder.class_to_enumarr(action)
 
-    def act(self, obs: np.array) -> int:
-        action = self.model.predict(obs.reshape(1, -1))
-        return action
+        self.setInput(*inputs)
