@@ -1,11 +1,16 @@
 # Haxball Chameleon
 <img src="https://github.com/vkurenkov/haxball-imitator/blob/master/haxball-big-min.png">
 
-Solving Haxball using Imitation Learning methods.
+This repository contains an interface for interacting with the game and an implementation of behavioral clonning agent.
 
-## How to run my agents?
+### What is HaxBall anyway?
 
-### Make the server running.
+HaxBall is a realtime multiplayer game that plays like a mix between football and air-hockey, and it's a real blast ([official about](https://www.haxball.com/about)).
+
+
+### How to run my agents?
+
+#### Make the server running.
 
 1. Add the following line to your hosts file (`c:\windows\system32\drivers\etc\hosts` on windows, `/etc/hosts` on linux)
 ```
@@ -17,7 +22,7 @@ Solving Haxball using Imitation Learning methods.
 python run_server.py
 ```
 
-### Call up your agent.
+#### Call up your agent.
 
 0. Edit `run_bot.py` script to instantiate your agent (an example is provided).
 
@@ -28,7 +33,7 @@ python run_bot.py --channel-id=0
 
 2. Open `inter.haxball.com:8080/#channel_id` in your browser. This is the original game with slight modifications to allow sending states and accepting the inputs from the bot. One important limitation -- the game window must be active, otherwise the communication channel will hang.
 
-## How to parse replays?
+### How to parse replays?
 
 1. Run raw replays converter. It will preprocess raw replays, put them into a separate folder, and create a file with nickname mapping (nickname -> all replays).
 ```bash
