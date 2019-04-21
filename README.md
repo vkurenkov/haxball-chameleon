@@ -1,5 +1,5 @@
 # Haxball Chameleon
-<img src="https://www.haxball.com/FFuuq69i/s/haxball-big-min.png">
+<img src="https://github.com/vkurenkov/haxball-imitator/blob/master/haxball-big-min.png">
 
 Solving Haxball using Imitation Learning methods.
 
