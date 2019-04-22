@@ -41,7 +41,7 @@ python run_server.py
 python run_bot.py --channel-id=0
 ```
 
-2. Open `inter.haxball.com:8080/#channel_id` in your browser. This is the original game with slight modifications to allow sending states and accepting the inputs from the bot. One important limitation -- the game window must be active, otherwise the communication channel will hang.
+2. Open `inter.haxball.com:8080/#channel_id` in your browser. This is the original game with slight modifications to allow sending states and accepting the inputs from the bot.
 
 ### How to parse replays?
 ___________________________________________

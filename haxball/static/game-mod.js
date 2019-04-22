@@ -1397,7 +1397,7 @@ let exposed;
     c.Vh(a.L);
     window.document.addEventListener("keydown", F(this, this.nd));
     window.document.addEventListener("keyup", F(this, this.od));
-    window.requestAnimationFrame(F(this, this.Je));
+    window.timer.requestAnimationFrame(F(this, this.Je));
     this.hh = window.setInterval(function () {
       b.j.Xd.ql(b.ed);
       b.ed = 0
@@ -1665,7 +1665,7 @@ let exposed;
       }
       b.j.Ra.Bq(null != b.sd)
     };
-    window.requestAnimationFrame(F(this, this.Je));
+    window.timer.requestAnimationFrame(F(this, this.Je));
     this.hh = window.setInterval(function () {
       b.j.Xd.ql(b.ed);
       b.ed = 0
@@ -4490,7 +4490,7 @@ let exposed;
       window.document.removeEventListener("keydown", F(this, this.nd));
       window.document.removeEventListener("keyup", F(this, this.od));
       window.onbeforeunload = null;
-      window.cancelAnimationFrame(this.ne);
+      window.timer.cancelAnimationFrame(this.ne);
       this.mb.da();
       window.clearInterval(this.hh);
       window.clearInterval(this.$q);
@@ -4505,7 +4505,7 @@ let exposed;
       for (a = 0; a < b.length;) this.va.ma(b[a++])
     },
     Je: function () {
-      this.ne = window.requestAnimationFrame(F(this,
+      this.ne = window.timer.requestAnimationFrame(F(this,
         this.Je));
       this.mb.v();
       this.va.v();
@@ -5285,11 +5285,11 @@ let exposed;
       window.document.removeEventListener("keydown", F(this, this.nd));
       window.document.removeEventListener("keyup", F(this, this.od));
       window.onbeforeunload = null;
-      window.cancelAnimationFrame(this.ne);
+      window.timer.cancelAnimationFrame(this.ne);
       window.clearInterval(this.hh)
     },
     Je: function () {
-      this.ne = window.requestAnimationFrame(F(this, this.Je));
+      this.ne = window.timer.requestAnimationFrame(F(this, this.Je));
       this.va.v();
       this.Bc()
     },
