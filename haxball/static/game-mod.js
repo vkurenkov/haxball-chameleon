@@ -4718,7 +4718,7 @@ let exposed;
         F(this, this.qk))
     },
     v: function () {
-      var a = this.Id;
+      var a = interactiveGetInput();
       if (null != this.Rf && a != this.Ef) {
         this.Ef = a;
         var b = new $_DiscMoveAction;
@@ -4736,7 +4736,7 @@ let exposed;
       if (null != this.Rf && 0 != this.Ef) {
         this.Ef = this.Id = 0;
         var a = new $_DiscMoveAction;
-        a.input = 0;
+        a.input = interactiveGetInput();
         this.Rf(a)
       }
     },

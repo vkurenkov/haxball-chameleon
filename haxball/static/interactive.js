@@ -1,9 +1,27 @@
 
-exposed.Qa.prototype.qk = exposed.Qa.prototype.nd = exposed.Qa.prototype.od = () => null;
-
 let ws = null;
 interactiveReconnect();
 window.addEventListener('hashchange', interactiveReconnect);
+
+const Input = {
+  Up: 1,
+  Down: 2,
+  Left: 4,
+  Right: 8,
+  Kick: 16,
+};
+
+let interactiveBotInput = 0;
+
+function interactiveGetInput() {
+  const user = exposed.Qa.instance.Id;
+  const bot = interactiveBotInput;
+  const ignore = (user & Input.Up ? Input.Down : 0)
+    | (user & Input.Down ? Input.Up : 0)
+    | (user & Input.Left ? Input.Right : 0)
+    | (user & Input.Right ? Input.Left : 0);
+  return user | (bot & ~ignore);
+}
 
 function interactiveReconnect() {
   if (!location.hash) {
@@ -22,7 +40,7 @@ function interactiveReconnect() {
         exposed.$_BaseNetGameController.TICK = interactiveTick;
         break;
       default:
-        exposed.Qa.instance.Id = +msg;
+        interactiveBotInput = +msg;
     }
   };
 }
