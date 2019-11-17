@@ -1,5 +1,5 @@
 
-// haxball build FFuuq69i
+// haxball build QnHwsaqi
 
 class Writer {
   constructor() {
@@ -36,10 +36,10 @@ class Writer {
     this.writeUint8(value ? 1 : 0);
   }
   writeDisc(disc) {
-    this.writeFloat64(disc.a.x);
-    this.writeFloat64(disc.a.y);
-    this.writeFloat64(disc.M.x);
-    this.writeFloat64(disc.M.y);
+    this.writeFloat64(disc._a.x);
+    this.writeFloat64(disc._a.y);
+    this.writeFloat64(disc._M.x);
+    this.writeFloat64(disc._M.y);
   }
   writeBuffer(buffer) {
     const pos = this.pos;

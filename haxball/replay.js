@@ -4,6 +4,7 @@ const fs = require('fs');
 
 const hbr21 = require('./hbr2-1');
 const hbr22 = require('./hbr2-2');
+const hbr23 = require('./hbr2-3');
 const Writer = require('./static/writer').Writer;
 
 function getClosure(replay) {
@@ -14,6 +15,8 @@ function getClosure(replay) {
       return hbr21.closure;
     } else if (v === 2) {
       return hbr22.closure;
+    } else if (v === 3) {
+      return hbr23.closure;
     } else {
       throw new Error('unknown version');
     }

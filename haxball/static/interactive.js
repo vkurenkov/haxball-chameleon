@@ -14,7 +14,7 @@ const Input = {
 let interactiveBotInput = 0;
 
 function interactiveGetInput() {
-  const user = exposed.Qa.instance.Id;
+  const user = exposed.Qa.instance.Yd;
   const bot = interactiveBotInput;
   const ignore = (user & Input.Up ? Input.Down : 0)
     | (user & Input.Down ? Input.Up : 0)
@@ -50,7 +50,7 @@ function interactiveTick(controller) {
     return;
   }
   const writer = new Writer();
-  writer.writeUint8(controller.nc);
+  writer.writeUint8(controller.uc);
   writer.writePython(controller);
   writer.compact();
   ws.send(writer.view.buffer);
